@@ -1,0 +1,27 @@
+---
+interface Props {
+  /** « convert » met la conversion en avant. */
+  mode?: 'view' | 'convert';
+}
+const { mode = 'view' } = Astro.props;
+---
+<section class="emb" data-emb data-mode={mode} aria-label={mode === 'convert' ? 'Convertisseur de fichiers de broderie' : 'Visionneuse de fichiers de broderie'}>
+  <div class="drop" data-drop>
+    <p class="big">{mode === 'convert' ? 'Déposez le fichier de broderie à convertir' : 'Déposez un fichier de broderie'}</p>
+    <p>Formats PES, PEC, DST, JEF et EXP (Brother, Babylock, Tajima, Janome, Elna, Melco, Bernina). Glissez-déposez le fichier ici, ou</p>
+    <div class="btn-row" style="justify-content:center">
+      <label class="btn" style="margin:0;color:var(--accent-ink)">
+        Choisir un fichier
+        <input type="file" accept=".pes,.PES,.pec,.PEC,.dst,.DST,.jef,.JEF,.exp,.EXP" data-file />
+      </label>
+      <button type="button" class="btn secondary" data-sample>Essayer avec un motif d’exemple</button>
+    </div>
+    <p class="privacy">🔒 Le fichier est lu dans votre navigateur : vos motifs ne sont envoyés nulle part.</p>
+  </div>
+  <div class="result" data-result hidden aria-live="polite"></div>
+</section>
+
+<script>
+  import { mountViewer } from '../scripts/emb-ui';
+  document.querySelectorAll<HTMLElement>('[data-emb]').forEach(mountViewer);
+</script>

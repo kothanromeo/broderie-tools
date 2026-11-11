@@ -1,0 +1,74 @@
+---
+import Base from '../../layouts/Base.astro';
+import Viewer from '../../components/Viewer.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import Faq from '../../components/Faq.astro';
+import ToolCards from '../../components/ToolCards.astro';
+import { breadcrumbSchema, faqSchema, href, toolSchema, type FaqItem } from '../../site';
+
+const site = Astro.site!;
+const crumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Convertir un fichier de broderie', path: '/convertir-fichier-broderie/' },
+];
+const faq: FaqItem[] = [
+  {
+    q: 'Comment convertir un fichier PES en DST ?',
+    a: '<p>Déposez le fichier PES, vérifiez l’aperçu, puis cliquez sur « DST ». Le fichier converti se télécharge aussitôt. Les points et les changements de couleur sont conservés à l’identique ; seules les couleurs des fils disparaissent, car le DST ne les enregistre pas.</p>',
+  },
+  {
+    q: 'La conversion abîme-t-elle le motif ?',
+    a: '<p>Non : chaque point garde sa position exacte, au dixième de millimètre. Les grands déplacements sont simplement découpés en plusieurs sauts quand le format l’exige. Ce qui peut changer, ce sont les couleurs (ramenées à la palette de la marque) et la façon dont les coupes de fil sont codées.</p>',
+  },
+  {
+    q: 'Puis-je agrandir un motif en le convertissant ?',
+    a: '<p>Ce n’est pas proposé, volontairement. Un fichier de broderie est une suite de points : l’agrandir écarte les points et la broderie devient clairsemée, le réduire les serre et le fil casse. Pour changer la taille de plus de 10 %, il faut le motif d’origine dans un logiciel de création.</p>',
+  },
+  {
+    q: 'Le fichier converti fonctionnera-t-il sur ma machine ?',
+    a: '<p>Les fichiers produits suivent les formats standards et sont vérifiés par une bibliothèque de référence. Vérifiez seulement que le motif tient dans votre cadre, et que la machine accepte le format (certaines machines Brother récentes lisent aussi le DST).</p>',
+  },
+];
+---
+<Base
+  title="Convertir un fichier de broderie : PES, DST, JEF, EXP (gratuit)"
+  description="Convertissez vos motifs de broderie en ligne : PES en DST, DST en PES, JEF en PES, PES en JEF, EXP. Points conservés à l’identique, rien n’est envoyé sur internet."
+  keywords={["convertir pes en dst", "convertir dst en pes", "convertir jef en pes", "convertir pes en jef", "convertisseur broderie", "convertir fichier broderie", "pes to dst", "dst to pes", "convertir exp en pes", "convertir fichier brother janome", "format broderie brother", "convertisseur broderie gratuit"]}
+  schema={[toolSchema(site, { name: 'Convertisseur de fichiers de broderie', path: '/convertir-fichier-broderie/', description: 'Convertit les fichiers de broderie entre PES, DST, JEF et EXP.' }), breadcrumbSchema(site, crumbs), faqSchema(faq)]}
+>
+  <Crumbs items={crumbs} />
+  <section class="hero wrap">
+    <h1>Convertir un fichier de broderie</h1>
+    <p class="lead">Votre machine ne lit pas le format du motif ? Déposez le fichier, vérifiez l’aperçu et téléchargez-le en PES, DST, JEF ou EXP. Chaque point garde sa position exacte.</p>
+  </section>
+  <div class="wrap">
+    <Viewer mode="convert" />
+
+    <article class="prose narrow section">
+      <h2>Quel format choisir</h2>
+      <div class="table-wrap"><table class="formats">
+        <thead><tr><th>Format</th><th>Machines</th><th>Couleurs des fils</th></tr></thead>
+        <tbody>
+          <tr><td><strong>PES</strong></td><td>Brother, Babylock, certaines Bernette</td><td>oui (palette Brother)</td></tr>
+          <tr><td><strong>JEF</strong></td><td>Janome, Elna</td><td>oui (palette Janome)</td></tr>
+          <tr><td><strong>DST</strong></td><td>Tajima, machines professionnelles, la plupart des marques</td><td>non</td></tr>
+          <tr><td><strong>EXP</strong></td><td>Melco, Bernina</td><td>non</td></tr>
+        </tbody>
+      </table></div>
+      <p>
+        Le détail, avec les autres marques (Husqvarna, Pfaff, Singer), est dans le guide
+        <a href={href('/guides/formats-fichiers-broderie-machine/')}>quel format de broderie pour quelle machine</a>.
+      </p>
+      <h2>Ce qui est conservé</h2>
+      <ul>
+        <li><strong>Tous les points</strong>, à leur position exacte, dans le même ordre.</li>
+        <li><strong>Les changements de couleur</strong>, donc les arrêts de la machine pour changer de fil.</li>
+        <li><strong>Les couleurs</strong> en PES et JEF, ramenées à la teinte la plus proche de la palette de la marque.</li>
+        <li><strong>Les coupes de fil</strong> en PES et DST ; en JEF et EXP, elles deviennent des sauts.</li>
+      </ul>
+      <p>Les pièges à connaître sont détaillés dans <a href={href('/guides/convertir-fichier-broderie-pes-dst/')}>convertir un fichier de broderie sans rien perdre</a>.</p>
+    </article>
+    <Faq items={faq} />
+    <section class="section"><h2>Les autres outils</h2><ToolCards exclude="/convertir-fichier-broderie/" /></section>
+  </div>
+</Base>

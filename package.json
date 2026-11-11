@@ -1,0 +1,48 @@
+{
+  "name": "broderie-tools",
+  "version": "1.0.0",
+  "description": "Visionneuse et convertisseur gratuits de fichiers de broderie machine (PES, DST, JEF, EXP), dans le navigateur.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "author": "Roméo Kothan (https://github.com/kothanromeo)",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kothanromeo/broderie-tools.git"
+  },
+  "keywords": [
+    "broderie",
+    "embroidery",
+    "pes",
+    "dst",
+    "jef",
+    "exp",
+    "pec",
+    "brother",
+    "janome",
+    "tajima"
+  ],
+  "engines": {
+    "node": ">=22.23.4"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astrojs/markdown-remark": "^7.3.6",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^7.4.7"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "happy-dom": "^21.0.4",
+    "sharp": "^0.35.5",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.0"
+  }
+}

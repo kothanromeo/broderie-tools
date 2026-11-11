@@ -1,0 +1,98 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import Viewer from '../components/Viewer.astro';
+import ToolCards from '../components/ToolCards.astro';
+import Faq from '../components/Faq.astro';
+import { faqSchema, href, toolSchema, type FaqItem } from '../site';
+
+const site = Astro.site!;
+const posts = (await getCollection('guides')).sort((a, b) => +b.data.published - +a.data.published);
+
+const faq: FaqItem[] = [
+  {
+    q: 'Comment ouvrir un fichier PES sans logiciel ?',
+    a: '<p>Déposez-le simplement sur cette page : le motif s’affiche avec ses couleurs, ses dimensions et le nombre de points, sans rien installer. Cela fonctionne aussi sur tablette et sur téléphone.</p>',
+  },
+  {
+    q: 'Mes motifs sont-ils envoyés sur internet ?',
+    a: '<p>Non. Le fichier est lu par votre navigateur, sur votre appareil. C’est important pour les motifs achetés ou créés par vous : ils ne sont ni copiés ni conservés.</p>',
+  },
+  {
+    q: 'Pourquoi mon fichier DST s’affiche-t-il avec d’autres couleurs ?',
+    a: '<p>Le format DST n’enregistre pas les couleurs des fils, seulement les changements de couleur. L’outil attribue des couleurs bien distinctes à chaque bloc pour que vous puissiez les repérer ; votre machine affichera ses propres couleurs par défaut.</p>',
+  },
+  {
+    q: 'Quels formats sont lus ?',
+    a: '<p>PES et PEC (Brother, Babylock, Bernette), DST (Tajima et la plupart des machines professionnelles), JEF (Janome, Elna) et EXP (Melco, Bernina). Les formats VP3, HUS, VIP, XXX et PCS ne sont pas encore pris en charge.</p>',
+  },
+  {
+    q: 'La taille affichée est-elle exacte ?',
+    a: '<p>Oui : les fichiers de broderie enregistrent chaque point au dixième de millimètre. Les dimensions affichées sont celles de la zone brodée, sans les sauts de fil. Comparez-les à la taille de votre cadre avant de lancer la broderie.</p>',
+  },
+];
+---
+<Base
+  title="Ouvrir un fichier de broderie PES, DST, JEF en ligne (gratuit)"
+  description="Visionneuse gratuite de fichiers de broderie machine : aperçu en couleurs, dimensions, nombre de points, fils et cadre conseillé pour les fichiers PES, DST, JEF et EXP."
+  keywords={["ouvrir fichier pes", "visionneuse broderie", "lire fichier dst", "ouvrir fichier jef", "voir motif broderie", "fichier broderie machine", "pes viewer", "visualiser fichier broderie", "logiciel broderie gratuit", "aperçu motif broderie", "taille motif broderie", "nombre de points broderie", "brother pes", "janome jef"]}
+  schema={[toolSchema(site, { name: 'Visionneuse de fichiers de broderie', path: '/', description: 'Affiche et convertit les fichiers de broderie machine PES, PEC, DST, JEF et EXP.' }), faqSchema(faq)]}
+>
+  <section class="hero wrap">
+    <h1>Ouvrir un fichier de broderie</h1>
+    <p class="lead">
+      Un motif téléchargé ou acheté, et pas de logiciel pour le voir ? Déposez le fichier : il s’affiche avec ses couleurs de fil,
+      ses dimensions, le nombre de points et le cadre conseillé. Vous pouvez même regarder la broderie se faire point par point.
+    </p>
+    <ul class="badges">
+      <li>PES · DST · JEF · EXP · PEC</li>
+      <li>Simulation de la broderie</li>
+      <li>Conversion entre formats</li>
+      <li>Sans installation</li>
+    </ul>
+  </section>
+
+  <div class="wrap">
+    <Viewer />
+
+    <section class="section two-col">
+      <div>
+        <h2>Ce que vous voyez</h2>
+        <ul>
+          <li><strong>Le motif</strong> avec un rendu de fil en relief, sur fond blanc, lin, jean ou noir, avec zoom.</li>
+          <li><strong>Les dimensions</strong> en millimètres et en pouces, et le plus petit cadre usuel qui le contient.</li>
+          <li><strong>Les fils</strong> dans l’ordre de la broderie, avec leur nom et leur référence quand le fichier les donne.</li>
+          <li><strong>Le nombre de points</strong>, de coupes et de sauts, la longueur de fil et une estimation de la durée.</li>
+          <li><strong>La simulation</strong> : la broderie se dessine point par point, comme sur la machine.</li>
+        </ul>
+      </div>
+      <div>
+        <h2>Et ensuite</h2>
+        <p>
+          Votre machine ne lit pas ce format ? Convertissez le motif en PES, DST, JEF ou EXP en un clic, sous l’aperçu ou depuis
+          le <a href={href('/convertir-fichier-broderie/')}>convertisseur de fichiers de broderie</a>.
+        </p>
+        <p>
+          Vous pouvez aussi enregistrer l’aperçu en image PNG pour le partager, l’imprimer ou l’ajouter à une fiche produit.
+        </p>
+        <p>Pour savoir quel format choisir, voir <a href={href('/guides/formats-fichiers-broderie-machine/')}>quel format pour quelle machine</a>.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <h2>Les autres outils</h2>
+      <ToolCards exclude="/" />
+    </section>
+
+    <section class="section">
+      <h2>Les guides</h2>
+      <ul class="post-list">
+        {posts.map((p) => (
+          <li class="card"><a href={href(`/guides/${p.id}/`)}><h3>{p.data.title}</h3><p>{p.data.description}</p></a></li>
+        ))}
+      </ul>
+    </section>
+
+    <Faq items={faq} />
+  </div>
+</Base>

@@ -1,0 +1,48 @@
+---
+import Base from '../../layouts/Base.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { SITE, breadcrumbSchema } from '../../site';
+
+const crumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'À propos', path: '/a-propos/' },
+];
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: SITE.author,
+  url: SITE.authorUrl,
+  sameAs: [SITE.linkedin, SITE.instagram, SITE.portfolio, SITE.authorUrl],
+  jobTitle: 'Développeur',
+};
+---
+<Base
+  keywords={["broderie tools", "roméo kothan", "visionneuse broderie open source", "convertisseur broderie gratuit", "développeur"]}
+  title="À propos du projet"
+  description="Broderie Tools est un projet open source de Roméo Kothan : une visionneuse et un convertisseur gratuits de fichiers de broderie machine, dans le navigateur."
+  schema={[person, breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <Crumbs items={crumbs} />
+  <article class="wrap narrow prose" style="padding-top:1.5rem">
+    <h1>À propos</h1>
+    <p>
+      Je m’appelle {SITE.author}, je suis développeur. Pour simplement voir un motif de broderie avant de l’acheter ou de le broder,
+      il faut souvent installer un logiciel de marque, parfois payant, souvent réservé à un seul système. J’ai voulu une page qui s’ouvre
+      partout, même sur un téléphone, et qui lit les formats les plus courants.
+    </p>
+    <h2>Les principes</h2>
+    <ul>
+      <li><strong>Vos motifs restent chez vous.</strong> Le fichier est décodé par votre navigateur ; rien n’est envoyé sur internet.</li>
+      <li><strong>Des conversions fidèles.</strong> Les lecteurs et les convertisseurs sont vérifiés point par point avec pyembroidery, la bibliothèque libre de référence pour les formats de broderie.</li>
+      <li><strong>Le code est public</strong>, sous licence MIT.</li>
+    </ul>
+    <h2>Sous le capot</h2>
+    <p>
+      Astro pour le site, TypeScript sans framework côté client, et un canvas pour le rendu. Chaque format est lu octet par octet :
+      ternaire équilibré pour le DST, bloc PEC à 7 ou 12 bits pour le PES, octets signés pour le JEF et l’EXP. Les palettes de fils Brother
+      et Janome viennent de pyembroidery.
+    </p>
+    <h2>Contribuer</h2>
+    <p>Un fichier mal affiché, un format à ajouter ? Ouvrez une <a href={`${SITE.repo}/issues`} rel="noopener">issue sur GitHub</a>, ou retrouvez-moi sur <a href={SITE.linkedin} rel="me noopener">LinkedIn</a>.</p>
+  </article>
+</Base>

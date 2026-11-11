@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Crumbs from '../../components/Crumbs.astro';
+import { breadcrumbSchema, href } from '../../site';
+
+const posts = (await getCollection('guides')).sort((a, b) => +b.data.published - +a.data.published);
+const crumbs = [
+  { name: 'Accueil', path: '/' },
+  { name: 'Guides', path: '/guides/' },
+];
+const fmt = (d: Date) => d.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+<Base
+  keywords={["broderie machine", "format pes", "format dst", "format jef", "convertir fichier broderie", "cadre de broderie", "machine à broder", "guide broderie"]}
+  title="Guides : fichiers de broderie machine, formats et cadres"
+  description="Quel format pour quelle machine à broder, convertir sans perdre les couleurs, choisir son cadre, ouvrir un PES sans logiciel : des guides concrets."
+  schema={[breadcrumbSchema(Astro.site!, crumbs)]}
+>
+  <Crumbs items={crumbs} />
+  <section class="hero wrap narrow">
+    <h1>Guides de la broderie machine</h1>
+    <p class="lead">
+      Des explications concrètes sur le format et sur la réforme, écrites par un développeur qui a passé du temps dans les spécifications
+      pour que vous n’ayez pas à le faire.
+    </p>
+  </section>
+  <div class="wrap narrow">
+    <ul class="post-list">
+      {posts.map((p) => (
+        <li class="card">
+          <a href={href(`/guides/${p.id}/`)}>
+            <h2>{p.data.title}</h2>
+            <p>{p.data.description}</p>
+            <time datetime={p.data.published.toISOString()}>{fmt(p.data.published)}</time>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>

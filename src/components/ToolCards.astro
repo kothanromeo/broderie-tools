@@ -1,0 +1,23 @@
+---
+import { href } from '../site';
+interface Props {
+  exclude?: string;
+}
+const { exclude } = Astro.props;
+const tools = [
+  { path: '/', title: 'Visionneuse de broderie', text: 'Voir un motif PES, DST, JEF ou EXP avec ses vraies couleurs, ses dimensions et le nombre de points.' },
+  { path: '/convertir-fichier-broderie/', title: 'Convertir un fichier', text: 'Passer d’un format à l’autre : PES pour Brother, JEF pour Janome, DST pour Tajima, EXP pour Bernina.' },
+  { path: '/guides/formats-fichiers-broderie-machine/', title: 'Quel format pour ma machine ?', text: 'Le tableau des formats par marque, et ce que chacun conserve (couleurs, coupes, nom).' },
+].filter((t) => t.path !== exclude);
+---
+<div class="grid-3 grid-tools">
+  {tools.map((t) => (
+    <a class="card tool-card" href={href(t.path)}>
+      <h3>{t.title}</h3>
+      <p>{t.text}</p>
+    </a>
+  ))}
+</div>
+<style>
+  .grid-tools { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+</style>

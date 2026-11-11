@@ -1,0 +1,136 @@
+---
+import '../styles/global.css';
+import { NAV, SITE, href } from '../site';
+import { ICONS } from '../icons';
+import CreatorBand from '../components/CreatorBand.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Données structurées JSON-LD à injecter. */
+  schema?: object[];
+  ogType?: 'website' | 'article';
+  noindex?: boolean;
+  published?: string;
+  modified?: string;
+  /** Mots-clés de la page (meta keywords), du plus précis au plus général. */
+  keywords?: string[];
+}
+
+const { title, description, schema = [], ogType = 'website', noindex = false, published, modified, keywords = [] } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+const ogImage = new URL(href('/og.png'), Astro.site).toString();
+const fullTitle = title.includes(SITE.name) ? title : `${title} | ${SITE.name}`;
+const current = Astro.url.pathname;
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: new URL(href('/'), Astro.site).toString(),
+  inLanguage: 'fr-FR',
+};
+---
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    {keywords.length > 0 && <meta name="keywords" content={keywords.join(', ')} />}
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta name="author" content={SITE.author} />
+    <meta name="theme-color" content="#0b5c8c" />
+    <link rel="icon" href={href('/favicon.ico')} sizes="48x48" />
+    <link rel="icon" href={href('/favicon.svg')} type="image/svg+xml" />
+    <link rel="apple-touch-icon" href={href('/apple-touch-icon.png')} />
+    <link rel="sitemap" href={href('/sitemap-index.xml')} />
+    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} — guides`} href={href('/rss.xml')} />
+
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:locale" content={SITE.locale} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    {published && <meta property="article:published_time" content={published} />}
+    {modified && <meta property="article:modified_time" content={modified} />}
+
+    <script is:inline type="application/ld+json" set:html={JSON.stringify([websiteSchema, ...schema])} />
+  </head>
+  <body>
+    <a class="skip" href="#contenu">Aller au contenu</a>
+    <div class="top-strip">
+      <div class="wrap">
+        <span class="top-strip-text">Outil 100 % gratuit, créé par <strong>{SITE.author}</strong><span class="hide-sm">, développeur</span></span>
+        <a class="top-strip-cta" href={SITE.linkedin} rel="me noopener" target="_blank">
+          <Fragment set:html={ICONS.linkedin} />Suivre sur LinkedIn
+        </a>
+      </div>
+    </div>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href={href('/')} aria-label={`${SITE.name}, accueil`}>
+          <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="13" y="1.5" width="6" height="4" rx="1" fill="#0b5c8c"/><circle cx="16" cy="17.5" r="12.5" fill="#f3efe6" stroke="#0b5c8c" stroke-width="3"/><path d="M16 25s-7-4.4-7-9.2c0-2.6 2-4.3 4.1-4.3 1.3 0 2.4.7 2.9 1.7.5-1 1.6-1.7 2.9-1.7 2.1 0 4.1 1.7 4.1 4.3 0 4.8-7 9.2-7 9.2z" fill="#e8578f"/><path d="M10.5 16.5h11M12 20h8" stroke="#ffffff" stroke-width="1" stroke-dasharray="1.6 1.2" opacity=".8"/></svg>
+          {SITE.name}
+        </a>
+        <nav class="site-nav" aria-label="Navigation principale">
+          {NAV.map((n) => (
+            <a href={href(n.href)} aria-current={(n.href === '/' ? current === href('/') : current.startsWith(href(n.href))) ? 'page' : undefined}>{n.label}</a>
+          ))}
+          <a href={SITE.repo} rel="noopener">GitHub</a>
+          <a class="nav-linkedin" href={SITE.linkedin} rel="me noopener" target="_blank" title={`${SITE.author} sur LinkedIn`}>
+            <Fragment set:html={ICONS.linkedin} /><span>Suivre</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+    <main id="contenu">
+      <slot />
+    </main>
+    <CreatorBand />
+    <footer class="site-footer">
+      <div class="wrap">
+        <div>
+          <h2>{SITE.name}</h2>
+          <p>Visionneuse et convertisseur gratuits de fichiers de broderie machine : PES, PEC, DST, JEF, EXP. Les motifs sont lus dans votre navigateur.</p>
+        </div>
+        <div>
+          <h2>Outils</h2>
+          <ul>
+            <li><a href={href('/')}>Ouvrir un fichier de broderie (PES, DST, JEF)</a></li>
+            <li><a href={href('/convertir-fichier-broderie/')}>Convertir PES, DST, JEF et EXP</a></li>
+          </ul>
+          <h2 style="margin-top:1.2rem">Du même auteur</h2>
+          <ul>
+            {SITE.siblings.map((t) => <li><a href={t.url} rel="noopener">{t.name}</a> : {t.text}</li>)}
+          </ul>
+        </div>
+        <div>
+          <h2>Guides</h2>
+          <ul>
+            <li><a href={href('/guides/formats-fichiers-broderie-machine/')}>Quel format de broderie pour quelle machine ?</a></li>
+            <li><a href={href('/guides/convertir-fichier-broderie-pes-dst/')}>Convertir un fichier de broderie sans rien perdre</a></li>
+            <li><a href={href('/guides/taille-cadre-broderie/')}>Tailles de cadre de broderie et taille du motif</a></li>
+            <li><a href={href('/guides/ouvrir-fichier-pes-sans-logiciel/')}>Ouvrir un fichier PES sans logiciel</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>Projet</h2>
+          <ul>
+            <li><a href={href('/a-propos/')}>À propos</a></li>
+            <li><a href={SITE.repo} rel="noopener">Code source (licence MIT)</a></li>
+            <li>Créé par <a href={SITE.linkedin} rel="author noopener">{SITE.author}</a></li>
+            <li><a href={SITE.instagram} rel="me noopener">Instagram {SITE.instagramHandle}</a></li>
+            <li><a href={SITE.portfolio} rel="me noopener">Portfolio</a></li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
